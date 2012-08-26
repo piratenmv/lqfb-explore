@@ -30,12 +30,15 @@ cur.execute("""SELECT table_name FROM information_schema.tables WHERE table_sche
 tables = list()
 for t in cur.fetchall():
     tables.append(t[0])
+cur.close()
+
 
 fulldump = dict()
 
 # traverse tables
 for table in tables:
     query = 'SELECT * FROM ' + table + ';'
+    cur = conn.cursor()
     cur.execute(query)
 
     colnames = [desc[0] for desc in cur.description]
@@ -54,5 +57,4 @@ for table in tables:
 print(json.dumps(fulldump, default=dthandler, sort_keys=True, indent=2))
 
 # disconnect from database
-cur.close()
 conn.close()
